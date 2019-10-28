@@ -8,8 +8,8 @@ import reactivemongo.api.collections.bson.BSONCollection
 import reactivemongo.api.{MongoConnection, MongoDriver}
 import reactivemongo.bson.BSONDocument
 
-import scala.concurrent.Future
-
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
 
 object Exercise3 extends App {
   implicit val system = ActorSystem("QuickStart")
@@ -30,4 +30,15 @@ object Exercise3 extends App {
         .cursor[Medal]()
         .documentSource()
     }
+
+  def program: Future[Map[String, Int]] =
+    for {
+      source <- medalSource
+        totals <- source
+          .runFold[Map[String, Int]](Map.empty)((totals, medal) => {
+            totals + ((medal.team, totals.getOrElse(medal.team, 0) + 1))
+          })
+    } yield totals.filterNot { case (a, b) => b == 0 }
+
+  println(Await.result(program, 1.minute))
 }
