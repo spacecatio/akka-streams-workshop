@@ -17,9 +17,4 @@ object Exercise1 extends App {
 
   val printValues: Sink[Any, Future[Done]] =
     Sink.foreach(println)
-
-  val graph: RunnableGraph[Future[Done]] =
-    numbers.toMat(printValues)(Keep.right)
-
-  graph.run().onComplete(_ => system.terminate())
 }
