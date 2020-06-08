@@ -21,7 +21,11 @@ object Exercise2 extends App {
       .fromPath(Paths.get("/usr/share/dict/words"))
 
   val extractLines: Flow[ByteString, ByteString, NotUsed] =
-    Framing.delimiter(ByteString("\n"), maximumFrameLength = 256, allowTruncation = true)
+    Framing.delimiter(
+      ByteString("\n"),
+      maximumFrameLength = 256,
+      allowTruncation = true
+    )
 
   val utf8Decode: Flow[ByteString, String, NotUsed] =
     Flow[ByteString].map(_.decodeString(Charset.defaultCharset))

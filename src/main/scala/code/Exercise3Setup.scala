@@ -18,7 +18,9 @@ object Exercise3Setup extends App {
 
   val medalSource: Source[Medal, Future[IOResult]] =
     StreamConverters
-      .fromInputStream(() => getClass.getResourceAsStream("/medals-expanded.csv"))
+      .fromInputStream(() =>
+        getClass.getResourceAsStream("/medals-expanded.csv")
+      )
       .via(CsvParsing.lineScanner())
       .via(CsvToMap.toMapAsStrings())
       .map { data =>
@@ -34,13 +36,15 @@ object Exercise3Setup extends App {
           medal = data("Medal"),
           gold = data("Gold").toInt,
           silver = data("Silver").toInt,
-          bronze = data("Bronze").toInt,
+          bronze = data("Bronze").toInt
         )
       }
 
   def medalCollection: Future[BSONCollection] =
     for {
-      uri <- Future.fromTry(MongoConnection.parseURI(s"mongodb://localhost:27017"))
+      uri <- Future.fromTry(
+        MongoConnection.parseURI(s"mongodb://localhost:27017")
+      )
       conn <- Future.fromTry(MongoDriver().connection(uri, strictUri = true))
       db <- conn.database("olympics")
     } yield db.collection[BSONCollection]("medals")

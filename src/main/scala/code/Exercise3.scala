@@ -18,7 +18,9 @@ object Exercise3 extends App {
 
   def medalCollection: Future[BSONCollection] =
     for {
-      uri <- Future.fromTry(MongoConnection.parseURI(s"mongodb://localhost:27017"))
+      uri <- Future.fromTry(
+        MongoConnection.parseURI(s"mongodb://localhost:27017")
+      )
       conn <- Future.fromTry(MongoDriver().connection(uri, strictUri = true))
       db <- conn.database("olympics")
     } yield db.collection[BSONCollection]("medals")
