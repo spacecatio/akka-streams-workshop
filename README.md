@@ -4,10 +4,9 @@
 
 Implement and test the following:
 
-1. Create a stream of the numbers X to Y
-   (where X and Y are Ints))
+1. Create a stream of the numbers X to Y (where X and Y are Ints)
 2. Sum the numbers X to Y
-3. Create a stream of prime numbers between X and Y
+3. Create a stream of the factorials of X and Y
 
 ## Dictionary Exercise
 
@@ -55,3 +54,62 @@ Implement and test the following:
    2. A list of their events
    3. The number of gold, silver, and
       bronze medals they've won
+
+## Cheat Sheet
+
+Here are the most common methods you'll be using.
+Use your IDE to find out more about their types.
+
+Where I've used an uppercase first letter,
+I mean a singleton object from the Akka Streams library.
+Where I've used a lowercase first letter, 
+I mean a value of the relevant type.
+
+### Creating Sources
+
+```scala
+import akka.stream.scaladsl.{Source, FileIO}
+
+// Create a source from a sequence:
+Source.apply(iterable)
+
+// Create a source with a single value in it:
+Source.single(any)
+
+// Create a source from a file:
+FileIO.fromPath(Paths.get(string))
+```
+
+### Transforming Sources
+
+```scala
+source.map(function)
+source.mapAsync(int)(function)
+source.mapAsyncUnordered(int)(function)
+source.flatMapConcat(function)
+```
+
+### Creating Sinks
+
+```scala
+import akka.stream.scaladsl.Sink
+
+// Create a sink that runs a side-effect for each item:
+Sink.foreach(function)
+
+// Create a sink that combines items into a single value:
+Sink.fold(any)(function)
+```
+
+### Running Sources
+
+```scala
+// Run a source with a sink:
+source.runWith(sink)
+
+// Run a source with a Sink.foreach sink (shorthand):
+source.runForeach(function)
+
+// Run a source with a Sink.fold sink (shorthand):
+source.runFold(any)(function)
+```
