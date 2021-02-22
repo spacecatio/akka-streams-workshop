@@ -84,6 +84,7 @@ FileIO.fromPath(Paths.get(string))
 
 ```scala
 source.map(function)
+source.mapConcat(function)
 source.mapAsync(int)(function)
 source.mapAsyncUnordered(int)(function)
 source.flatMapConcat(function)
