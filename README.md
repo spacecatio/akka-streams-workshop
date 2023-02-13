@@ -1,57 +1,42 @@
 # Akka Streams
 
-## Numbers Exercise
+## Exercise 1
 
-Implement and test the following:
+A few minimal exercises to get you started:
 
-1. Create a stream of the numbers X to Y
-   (where X and Y are Ints))
-2. Sum the numbers X to Y
-3. Create a stream of prime numbers between X and Y
+- Print the numbers 1 to 100 (generate them with a Source, print them with a Sink)
+- Print the squares of the numbers 1 to 100 (1, 4, 9, 16, etc…)
+- Print the total of the squares of the numbers 1 to 100
 
-## Dictionary Exercise
+## Exercise 2
 
-Implement and test the following:
+Let’s do something a bit more practical. Here are four exercises involving reading the contents of a file.
 
-1. Read at the contents of a text file
+Read at the contents of `/usr/share/dict/words` and do the following things (tackle each problem separately in a different code sample):
 
-2. Use this to read the file `/usr/share/dict/words`
-   for the following:
+- Print the contents of the file to stdout. Use the following to get the file:
 
-3. Count the words in the file.
+  `FileIO.fromPath(Paths.get("/usr/share/dict/words"))`
 
-4. Count the vowels in the file.
+- Count the words in the file (`235886` on my machine) and return the count after running the stream.
+- Count the number of vowels in the file (`889151` on my machine) and return the count after running the stream.
+- Print adjacent pairs of words that have the same length (tip: use `source.sliding()`).
+- Write the pairs of words from the last exercise out into a new file (tip: use `FileIO.sink()`)
 
-5. Count the words containing
-   a user-supplied substring.
+## Exercise 3
 
-6. Print adjacent pairs of words
-   with the same length (use `source.sliding()`).
+We often need to *fold* over streams to accumulate results while only having access to a single item at a time. Here are a few exercises along these lines (see `src/main/resources/medals-expanded.csv` and `Medal.scala`):
 
-## Olympic Medals Redux
+- Write a method `athletesForTeam` that accepts a three-letter team code and returns the list of athletes who competed for that country.
+- Write a method `medalsForTeam` that accepts a three-letter team code and returns the number of bronze, silver, and gold medals .
+- Write a method `leaderboard` that returns a leaderboard of athletes by total medal count.
 
-1. Write the contents of `medals-expanded.csv`
-   to a collection called `medals`
-   in a MongoDB database called `olympics`
-   (see `Exercise3Setup.scala`)
+## Exercise 4
 
-2. Read the medals back in and print them.
+Let’s practice interfacing with a database. We’ll use MongoDB:
 
-3. Traverse the collection and collect
-   the total number of gold, silver, and bronze medals
-   won by each team
-
-4. Traverse the collection and _while traversing_
-   print the following for each record (use `source.scan()`) :
-
-   - the number of records read so far;
-   - the name of the athlete in the current row;
-   - the number of gold medals they have won so far.
-
-5. Traverse the collection and create
-   a second collection `athletes` containing:
-
-   1. The name of each athlete
-   2. A list of their events
-   3. The number of gold, silver, and
-      bronze medals they've won
+1. Print all the medals from the database
+2. Print the number of gold, silver, and bronze medals won by each country
+3. Create a second collection, `totals`, containing:
+   1. the name of each country;
+   2. the total number of gold, silver, and bronze medals.
