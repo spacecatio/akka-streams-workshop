@@ -11,7 +11,7 @@ import reactivemongo.api.{MongoConnection, MongoDriver}
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
-object Exercise3Setup extends App {
+object Exercise4Setup extends App {
   implicit val system = ActorSystem("QuickStart")
   implicit val materializer = ActorMaterializer()
   implicit val ec = system.dispatcher
@@ -21,22 +21,7 @@ object Exercise3Setup extends App {
       .fromInputStream(() => getClass.getResourceAsStream("/medals-expanded.csv"))
       .via(CsvParsing.lineScanner())
       .via(CsvToMap.toMapAsStrings())
-      .map { data =>
-        Medal(
-          games = data("Games"),
-          year = data("Year").toInt,
-          sport = data("Sport"),
-          discipline = data("Discipline"),
-          athlete = data("Athlete"),
-          team = data("Team"),
-          gender = data("Gender"),
-          event = data("Event"),
-          medal = data("Medal"),
-          gold = data("Gold").toInt,
-          silver = data("Silver").toInt,
-          bronze = data("Bronze").toInt,
-        )
-      }
+      .map(Medal.unsafeParseCsv)
 
   def medalCollection: Future[BSONCollection] =
     for {

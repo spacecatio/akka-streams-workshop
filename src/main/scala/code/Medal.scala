@@ -23,4 +23,20 @@ object Medal {
 
   implicit val reader: BSONDocumentReader[Medal] =
     Macros.reader
+
+  def unsafeParseCsv(data: Map[String, String]): Medal =
+    Medal(
+      games = data("Games"),
+      year = data("Year").toInt,
+      sport = data("Sport"),
+      discipline = data("Discipline"),
+      athlete = data("Athlete"),
+      team = data("Team"),
+      gender = data("Gender"),
+      event = data("Event"),
+      medal = data("Medal"),
+      gold = data("Gold").toInt,
+      silver = data("Silver").toInt,
+      bronze = data("Bronze").toInt,
+    )
 }
