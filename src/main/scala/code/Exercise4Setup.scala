@@ -11,34 +11,18 @@ import reactivemongo.api.{MongoConnection, MongoDriver}
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
-object Exercise3Setup extends App {
+object Exercise4Setup extends App {
   implicit val system = ActorSystem("QuickStart")
   implicit val materializer = ActorMaterializer()
   implicit val ec = system.dispatcher
 
-  val medalSource: Source[Medal, Future[IOResult]] =
+  val medalSource: Source[Map[String, String], Future[IOResult]] =
     StreamConverters
       .fromInputStream(() =>
         getClass.getResourceAsStream("/medals-expanded.csv")
       )
       .via(CsvParsing.lineScanner())
       .via(CsvToMap.toMapAsStrings())
-      .map { data =>
-        Medal(
-          games = data("Games"),
-          year = data("Year").toInt,
-          sport = data("Sport"),
-          discipline = data("Discipline"),
-          athlete = data("Athlete"),
-          team = data("Team"),
-          gender = data("Gender"),
-          event = data("Event"),
-          medal = data("Medal"),
-          gold = data("Gold").toInt,
-          silver = data("Silver").toInt,
-          bronze = data("Bronze").toInt
-        )
-      }
 
   def medalCollection: Future[BSONCollection] =
     for {
@@ -49,11 +33,8 @@ object Exercise3Setup extends App {
       db <- conn.database("olympics")
     } yield db.collection[BSONCollection]("medals")
 
-  def medalSink(coll: BSONCollection): Sink[Medal, Future[Done]] =
-    Sink.foreachAsync[Medal](1) { medal =>
-      println(medal)
-      coll.insert.one(medal).map(_ => ())
-    }
+  def medalSink(coll: BSONCollection): Sink[Map[String, String], Future[Done]] =
+    Sink.foreachAsync(1)(data => coll.insert.one(data).map(_ => ()))
 
   def program: Future[Unit] =
     for {

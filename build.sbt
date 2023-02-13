@@ -1,4 +1,4 @@
-name := "akka-streams-case-study"
+name := "akka-streams-exercises"
 version := "0.0.1"
 scalaVersion := "2.12.11"
 

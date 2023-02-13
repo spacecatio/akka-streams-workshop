@@ -19,4 +19,6 @@ object Exercise0 extends App {
   //  3. Connect source to sink
   //  4. Run (and maybe collect final value)
 
+  Source(1 to 100).runFold(0)(_ + _)
+
 }
